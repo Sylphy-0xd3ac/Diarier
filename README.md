@@ -22,9 +22,10 @@ A secure diary API system with custom MVC framework implementation and MongoDB i
 - **Database**: MongoDB 6.0+ with Mongoose
 - **HTTP Framework**: Express.js
 - **Authentication**: JWT (jsonwebtoken)
-- **Password Hashing**: bcrypt
+- **Password Hashing**: Argon2id
 - **Dev Server**: tsx with hot reload
-- **Package Manager**: Yarn
+- **Package Manager**: Yarn 4.10.3
+- **Linting**: Biome (fast toolchain)
 
 ## 📁 Project Structure
 
@@ -108,6 +109,19 @@ yarn test
 # Run tests with coverage
 yarn test:coverage
 ```
+
+### Code Quality & Formatting
+
+```bash
+# Check and fix code formatting, imports, and linting issues
+yarn check
+```
+
+This command uses Biome to:
+- Organize imports automatically
+- Format code consistently
+- Check for linting issues
+- Fix issues automatically with `--write` flag
 
 ## 📡 API Endpoints
 

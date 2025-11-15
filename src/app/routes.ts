@@ -1,9 +1,9 @@
-import { Express, Request, Response, NextFunction } from 'express';
-import { AppConfig, Context } from '../types';
+import type { Express, NextFunction, Request, Response } from 'express';
 import { authMiddleware } from '../core/Middleware';
-import { StatusController } from './controllers/StatusController';
+import type { AppConfig, Context } from '../types';
 import { AuthController } from './controllers/AuthController';
 import { EntryController } from './controllers/EntryController';
+import { StatusController } from './controllers/StatusController';
 
 export function registerRoutes(app: Express, config: AppConfig): void {
   const statusController = new StatusController();
@@ -13,7 +13,7 @@ export function registerRoutes(app: Express, config: AppConfig): void {
   // Helper to create context and call controller methods
   const createHandler = (
     controllerMethod: (this: any) => Promise<void> | void,
-    controller: any
+    controller: any,
   ) => {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -41,29 +41,13 @@ export function registerRoutes(app: Express, config: AppConfig): void {
 
   // Entry Routes (Protected)
   const auth = authMiddleware(config);
-  app.get(
-    '/api/v1/entries',
-    auth,
-    createHandler(entryController.getAllEntries, entryController)
-  );
-  app.post(
-    '/api/v1/entries',
-    auth,
-    createHandler(entryController.createEntry, entryController)
-  );
-  app.get(
-    '/api/v1/entries/:id',
-    auth,
-    createHandler(entryController.getEntry, entryController)
-  );
-  app.put(
-    '/api/v1/entries/:id',
-    auth,
-    createHandler(entryController.updateEntry, entryController)
-  );
+  app.get('/api/v1/entries', auth, createHandler(entryController.getAllEntries, entryController));
+  app.post('/api/v1/entries', auth, createHandler(entryController.createEntry, entryController));
+  app.get('/api/v1/entries/:id', auth, createHandler(entryController.getEntry, entryController));
+  app.put('/api/v1/entries/:id', auth, createHandler(entryController.updateEntry, entryController));
   app.delete(
     '/api/v1/entries/:id',
     auth,
-    createHandler(entryController.deleteEntry, entryController)
+    createHandler(entryController.deleteEntry, entryController),
   );
 }

@@ -1,4 +1,4 @@
-import { Document, Schema } from 'mongoose';
+import { type Document, Schema } from 'mongoose';
 import { BaseModel } from '../../core/Model/BaseModel';
 
 export interface IEntry extends Document {
@@ -28,7 +28,7 @@ const entrySchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export class Entry extends BaseModel<IEntry> {

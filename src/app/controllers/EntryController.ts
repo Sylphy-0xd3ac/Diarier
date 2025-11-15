@@ -1,6 +1,6 @@
 import { BaseController } from '../../core/Controller/BaseController';
-import { Entry } from '../models/Entry';
 import { UuidUtils } from '../../core/Utils';
+import { Entry } from '../models/Entry';
 
 export class EntryController extends BaseController {
   private entryModel = new Entry();
@@ -11,13 +11,10 @@ export class EntryController extends BaseController {
 
       const entries = await this.entryModel.getAllEntries();
 
-      const response = this.success(
-        { entries },
-        'Entries retrieved successfully'
-      );
+      const response = this.success({ entries }, 'Entries retrieved successfully');
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to retrieve entries');
       this.send(response);
     }
@@ -49,13 +46,10 @@ export class EntryController extends BaseController {
         cipherText,
       });
 
-      const response = this.success(
-        { id: entry.id },
-        'Entry created successfully'
-      );
+      const response = this.success({ id: entry.id }, 'Entry created successfully');
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to create entry');
       this.send(response);
     }
@@ -83,7 +77,7 @@ export class EntryController extends BaseController {
 
       const response = this.success(entry, 'Entry retrieved successfully');
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to retrieve entry');
       this.send(response);
     }
@@ -124,7 +118,7 @@ export class EntryController extends BaseController {
 
       const response = this.success(updated, 'Entry updated successfully');
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to update entry');
       this.send(response);
     }
@@ -152,13 +146,10 @@ export class EntryController extends BaseController {
 
       await this.entryModel.deleteByUUID(id);
 
-      const response = this.success(
-        { deletedId: id },
-        'Entry deleted successfully'
-      );
+      const response = this.success({ deletedId: id }, 'Entry deleted successfully');
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to delete entry');
       this.send(response);
     }

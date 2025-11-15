@@ -1,8 +1,8 @@
 import express from 'express';
-import { Database } from './core/Database';
 import config from './app/config';
-import { loggerMiddleware, corsMiddleware, errorHandler } from './core/Middleware';
 import { registerRoutes } from './app/routes';
+import { Database } from './core/Database';
+import { corsMiddleware, errorHandler, loggerMiddleware } from './core/Middleware';
 
 async function bootstrap() {
   try {

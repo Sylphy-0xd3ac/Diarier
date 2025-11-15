@@ -1,4 +1,4 @@
-import { Context, ApiResponse } from '../../types';
+import type { ApiResponse, Context } from '../../types';
 
 export abstract class BaseController {
   protected ctx: Context | null = null;
@@ -7,7 +7,7 @@ export abstract class BaseController {
     this.ctx = ctx;
   }
 
-  protected success<T = any>(data?: T, message: string = 'success'): ApiResponse<T> {
+  protected success<T = any>(data?: T, message = 'success'): ApiResponse<T> {
     return {
       status: 'success',
       data,
@@ -15,7 +15,7 @@ export abstract class BaseController {
     };
   }
 
-  protected error(message: string, code: number = 400): ApiResponse {
+  protected error(message: string, code = 400): ApiResponse {
     return {
       status: 'error',
       message,

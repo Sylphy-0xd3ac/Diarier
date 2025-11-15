@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
-import { DatabaseConfig } from '../../types';
+import type { DatabaseConfig } from '../../types';
 
 export class Database {
   static async connect(config: DatabaseConfig): Promise<void> {
     try {
-      await mongoose.connect(config.uri, config.options || {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(
+        config.uri,
+        config.options || {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        },
+      );
       console.log('✓ MongoDB connected successfully');
     } catch (error) {
       console.error('✗ MongoDB connection error:', error);

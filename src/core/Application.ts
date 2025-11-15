@@ -1,9 +1,9 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
-import http from 'http';
-import { AppConfig, Context } from '../types';
-import { Router } from './Router/Router';
+import http from 'node:http';
+import express, { type Express, type Request, type Response, type NextFunction } from 'express';
+import type { AppConfig } from '../types';
+import type { BaseController } from './Controller/BaseController';
 import { Database } from './Database';
-import { BaseController } from './Controller/BaseController';
+import { Router } from './Router/Router';
 
 export class Application {
   private express: Express;
@@ -36,7 +36,7 @@ export class Application {
     });
   }
 
-  private registerController(controller: BaseController): void {
+  private registerController(_controller: BaseController): void {
     // Controllers are registered via routes.ts directly
     // This method is kept for potential future use
   }
@@ -50,7 +50,7 @@ export class Application {
       this.server = http.createServer(this.express);
 
       await new Promise<void>((resolve) => {
-        this.server!.listen(port, () => {
+        this.server?.listen(port, () => {
           console.log(`✓ Server running at http://localhost:${port}`);
           resolve();
         });
@@ -64,7 +64,7 @@ export class Application {
   async stop(): Promise<void> {
     if (this.server) {
       await new Promise<void>((resolve) => {
-        this.server!.close(() => {
+        this.server?.close(() => {
           console.log('✓ Server stopped');
           resolve();
         });

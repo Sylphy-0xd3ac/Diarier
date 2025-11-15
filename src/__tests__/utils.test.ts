@@ -1,4 +1,4 @@
-import { PasswordUtils, JwtUtils, UuidUtils } from '../core/Utils';
+import { JwtUtils, PasswordUtils, UuidUtils } from '../core/Utils';
 
 describe('Utility Functions', () => {
   describe('PasswordUtils', () => {

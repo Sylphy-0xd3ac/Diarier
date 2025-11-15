@@ -1,7 +1,7 @@
 import { BaseController } from '../../core/Controller/BaseController';
-import { Config } from '../models/Config';
-import { PasswordUtils, JwtUtils } from '../../core/Utils';
+import { JwtUtils, PasswordUtils } from '../../core/Utils';
 import config from '../config';
+import { Config } from '../models/Config';
 
 export class AuthController extends BaseController {
   private configModel = new Config();
@@ -31,11 +31,11 @@ export class AuthController extends BaseController {
 
       const response = this.success(
         { message: 'Application initialized successfully' },
-        'Initialized'
+        'Initialized',
       );
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to initialize application');
       this.send(response);
     }
@@ -77,7 +77,7 @@ export class AuthController extends BaseController {
       const token = JwtUtils.sign(
         { authenticated: true, timestamp: Date.now() },
         config.jwt.secret,
-        config.jwt.expiresIn
+        config.jwt.expiresIn,
       );
 
       const response = this.success(
@@ -85,11 +85,11 @@ export class AuthController extends BaseController {
           token,
           expiresIn: 3600,
         },
-        'Login successful'
+        'Login successful',
       );
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to login');
       this.send(response);
     }

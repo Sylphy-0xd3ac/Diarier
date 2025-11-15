@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppConfig } from '../../types';
+import type { AppConfig } from '../../types';
 
 export function errorHandler() {
-  return (err: any, req: Request, res: Response, next: NextFunction) => {
+  return (err: any, _req: Request, res: Response, _next: NextFunction) => {
     console.error('Error:', err);
 
     const statusCode = err.statusCode || 500;
@@ -33,7 +33,7 @@ export function authMiddleware(config: AppConfig) {
       const decoded = jwt.verify(token, config.jwt.secret);
       (req as any).user = decoded;
       next();
-    } catch (error) {
+    } catch (_error) {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized: Invalid token',
@@ -49,7 +49,9 @@ export function loggerMiddleware() {
 
     res.on('finish', () => {
       const duration = Date.now() - startTime;
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+      console.log(
+        `[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`,
+      );
     });
 
     next();
@@ -60,7 +62,10 @@ export function corsMiddleware() {
   return (req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    );
 
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);

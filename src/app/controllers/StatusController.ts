@@ -1,6 +1,6 @@
 import { BaseController } from '../../core/Controller/BaseController';
-import { Config } from '../models/Config';
 import { Database } from '../../core/Database';
+import { Config } from '../models/Config';
 
 export class StatusController extends BaseController {
   private configModel = new Config();
@@ -18,11 +18,11 @@ export class StatusController extends BaseController {
           server: 'running',
           timestamp: new Date().toISOString(),
         },
-        'Status retrieved successfully'
+        'Status retrieved successfully',
       );
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Failed to retrieve status');
       this.send(response);
     }
@@ -38,11 +38,11 @@ export class StatusController extends BaseController {
           timestamp: new Date().toISOString(),
           database: Database.isConnected() ? 'connected' : 'disconnected',
         },
-        'Health check passed'
+        'Health check passed',
       );
 
       this.send(response);
-    } catch (error) {
+    } catch (_error) {
       const response = this.error('Health check failed', 503);
       this.send(response);
     }

@@ -9,15 +9,10 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "check": "biome check --write --unsafe ."
   },
-  "keywords": [
-    "diary",
-    "api",
-    "mvc",
-    "typescript",
-    "mongodb"
-  ],
+  "keywords": ["diary", "api", "mvc", "typescript", "mongodb"],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -30,6 +25,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.0",
     "@types/jsonwebtoken": "^9.0.0",

@@ -1,5 +1,5 @@
-import { Router as ExpressRouter, Request, Response, NextFunction } from 'express';
-import { Context, RouteHandler } from '../../types';
+import { Router as ExpressRouter, type NextFunction, type Request, type Response } from 'express';
+import type { Context, RouteHandler } from '../../types';
 
 export class Router {
   private router: ExpressRouter;
@@ -9,7 +9,11 @@ export class Router {
     this.router = ExpressRouter();
   }
 
-  register(method: 'get' | 'post' | 'put' | 'delete' | 'patch', path: string, handlers: any[]): void {
+  register(
+    method: 'get' | 'post' | 'put' | 'delete' | 'patch',
+    path: string,
+    handlers: any[],
+  ): void {
     const key = `${method}:${path}`;
     this.routes.set(key, handlers);
 

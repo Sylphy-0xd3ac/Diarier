@@ -1,4 +1,4 @@
-import { Model, Schema, Document } from 'mongoose';
+import type { Document, Model, Schema } from 'mongoose';
 import mongoose from 'mongoose';
 
 export abstract class BaseModel<T extends Document> {

@@ -15,7 +15,7 @@ export class PasswordUtils {
   static async compare(password: string, hash: string): Promise<boolean> {
     try {
       return await verify(hash, password);
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

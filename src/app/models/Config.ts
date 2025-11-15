@@ -1,4 +1,4 @@
-import { Document, Schema } from 'mongoose';
+import { type Document, Schema } from 'mongoose';
 import { BaseModel } from '../../core/Model/BaseModel';
 
 export interface IConfig extends Document {
@@ -22,7 +22,7 @@ const configSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export class Config extends BaseModel<IConfig> {
