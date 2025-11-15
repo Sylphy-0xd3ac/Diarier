@@ -3,7 +3,7 @@ import { BaseModel } from '../../core/Model/BaseModel';
 
 export interface IConfig extends Document {
   key: string;
-  value: any;
+  value: unknown;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,12 +34,12 @@ export class Config extends BaseModel<IConfig> {
     return this.findOne({ key });
   }
 
-  async setByKey(key: string, value: any): Promise<IConfig> {
+  async setByKey(key: string, value: unknown): Promise<IConfig> {
     const existing = await this.getByKey(key);
     if (existing) {
-      const updated = await this.updateById(existing._id.toString(), { value });
-      return updated!;
+      const updated = await this.updateById(existing._id.toString(), { value }) as IConfig;
+      return updated;
     }
     return this.create({ key, value });
-  }
+  } 
 }
