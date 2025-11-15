@@ -1,51 +1,54 @@
-import type { Express, NextFunction, Request, Response } from 'express';
+import type Koa from 'koa';
 import { authMiddleware } from '../core/Middleware';
 import type { AppConfig, Context } from '../types';
 import { AuthController } from './controllers/AuthController';
 import { EntryController } from './controllers/EntryController';
 import { StatusController } from './controllers/StatusController';
 
-export function registerRoutes(app: Express, config: AppConfig): void {
+export function registerRoutes(router: any, config: AppConfig): void {
   const statusController = new StatusController();
   const authController = new AuthController();
   const entryController = new EntryController();
 
   // Helper to create context and call controller methods
-  const createHandler = (
-    controllerMethod: (this: any) => Promise<void> | void,
-    controller: any,
-  ) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+  const createHandler = (controllerMethod: (this: any) => Promise<void> | void, controller: any) => {
+    return async (ctx: Context) => {
       try {
-        const ctx: Context = {
-          req,
-          res,
-          next,
-          user: (req as any).user,
-        };
         controller.setContext?.(ctx);
         await controllerMethod.call(controller);
       } catch (error) {
-        next(error);
+        ctx.throw(500, 'Internal Server Error');
       }
     };
   };
 
   // Status Routes
-  app.get('/health', createHandler(statusController.getHealth, statusController));
-  app.get('/api/v1/status', createHandler(statusController.getStatus, statusController));
+  router.get('/health', createHandler(statusController.getHealth, statusController));
+  router.get('/api/v1/status', createHandler(statusController.getStatus, statusController));
 
   // Auth Routes
-  app.post('/api/v1/init', createHandler(authController.init, authController));
-  app.post('/api/v1/auth/login', createHandler(authController.login, authController));
+  router.post('/api/v1/init', createHandler(authController.init, authController));
+  router.post('/api/v1/auth/login', createHandler(authController.login, authController));
 
   // Entry Routes (Protected)
   const auth = authMiddleware(config);
-  app.get('/api/v1/entries', auth, createHandler(entryController.getAllEntries, entryController));
-  app.post('/api/v1/entries', auth, createHandler(entryController.createEntry, entryController));
-  app.get('/api/v1/entries/:id', auth, createHandler(entryController.getEntry, entryController));
-  app.put('/api/v1/entries/:id', auth, createHandler(entryController.updateEntry, entryController));
-  app.delete(
+  router.get('/api/v1/entries', auth, createHandler(entryController.getAllEntries, entryController));
+  router.post(
+    '/api/v1/entries',
+    auth,
+    createHandler(entryController.createEntry, entryController),
+  );
+  router.get(
+    '/api/v1/entries/:id',
+    auth,
+    createHandler(entryController.getEntry, entryController),
+  );
+  router.put(
+    '/api/v1/entries/:id',
+    auth,
+    createHandler(entryController.updateEntry, entryController),
+  );
+  router.delete(
     '/api/v1/entries/:id',
     auth,
     createHandler(entryController.deleteEntry, entryController),

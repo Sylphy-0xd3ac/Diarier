@@ -1,76 +1,63 @@
-import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import type { AppConfig } from '../../types';
+import type { Middleware } from 'koa';
+import type { AppConfig, Context } from '../../types';
 
-export function errorHandler() {
-  return (err: any, _req: Request, res: Response, _next: NextFunction) => {
-    console.error('Error:', err);
+export function errorHandler(): Middleware {
+  return async (ctx: Context, next) => {
+    try {
+      await next();
+    } catch (err: any) {
+      console.error('Error:', err);
 
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
+      const statusCode = err.statusCode || 500;
+      const message = err.message || 'Internal Server Error';
 
-    res.status(statusCode).json({
-      status: 'error',
-      message,
-      code: statusCode,
-    });
+      ctx.status = statusCode;
+      ctx.body = {
+        status: 'error',
+        message,
+        code: statusCode,
+      };
+    }
   };
 }
 
-export function authMiddleware(config: AppConfig) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+export function authMiddleware(config: AppConfig): Middleware {
+  return async (ctx: Context, next) => {
+    const token = ctx.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {
-      return res.status(401).json({
+      ctx.status = 401;
+      ctx.body = {
         status: 'error',
         message: 'Unauthorized: No token provided',
         code: 401,
-      });
+      };
+      return;
     }
 
     try {
       const decoded = jwt.verify(token, config.jwt.secret);
-      (req as any).user = decoded;
-      next();
+      ctx.user = decoded;
+      await next();
     } catch (_error) {
-      return res.status(401).json({
+      ctx.status = 401;
+      ctx.body = {
         status: 'error',
         message: 'Unauthorized: Invalid token',
         code: 401,
-      });
+      };
     }
   };
 }
 
-export function loggerMiddleware() {
-  return (req: Request, res: Response, next: NextFunction) => {
+export function loggerMiddleware(): Middleware {
+  return async (ctx: Context, next) => {
     const startTime = Date.now();
-
-    res.on('finish', () => {
-      const duration = Date.now() - startTime;
-      console.log(
-        `[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`,
-      );
-    });
-
-    next();
-  };
-}
-
-export function corsMiddleware() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    await next();
+    const duration = Date.now() - startTime;
+    console.log(
+      `[${new Date().toISOString()}] ${ctx.method} ${ctx.path} - ${ctx.status} (${duration}ms)`,
     );
-
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(200);
-    }
-
-    next();
   };
 }

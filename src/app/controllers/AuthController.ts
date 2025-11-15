@@ -10,7 +10,7 @@ export class AuthController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { password } = this.ctx.req.body;
+      const { password } = this.ctx.request.body as any;
 
       if (!password || typeof password !== 'string' || password.length === 0) {
         const response = this.error('Password is required and must be a non-empty string', 400);
@@ -45,7 +45,7 @@ export class AuthController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { password } = this.ctx.req.body;
+      const { password } = this.ctx.request.body as any;
 
       if (!password || typeof password !== 'string') {
         const response = this.error('Password is required', 400);
