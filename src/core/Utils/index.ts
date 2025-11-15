@@ -1,14 +1,23 @@
-import bcrypt from 'bcrypt';
+import { hash, verify } from 'argon2';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
 export class PasswordUtils {
-  static async hash(password: string, rounds: number = 10): Promise<string> {
-    return bcrypt.hash(password, rounds);
+  static async hash(password: string): Promise<string> {
+    return hash(password, {
+      type: 2,
+      memoryCost: 65536,
+      timeCost: 3,
+      parallelism: 4,
+    });
   }
 
   static async compare(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    try {
+      return await verify(hash, password);
+    } catch (error) {
+      return false;
+    }
   }
 }
 

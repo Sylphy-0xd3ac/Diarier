@@ -250,7 +250,10 @@ Headers: Authorization: Bearer <token>
 ## 🔐 Security Features
 
 1. **Authentication**: JWT-based token authentication
-2. **Password Security**: bcrypt hashing with 10 salt rounds
+2. **Password Security**: Argon2id hashing (memory-hard algorithm)
+   - Memory cost: 64 MB
+   - Time cost: 3 iterations
+   - Parallelism: 4 threads
 3. **Client-side Encryption**: All encryption/decryption happens on client
 4. **CORS**: Configurable cross-origin resource sharing
 5. **Input Validation**: Type checking and validation for all inputs
