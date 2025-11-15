@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A secure diary API system with custom MVC framework and MongoDB",
   "main": "dist/index.js",
-  "packageManager": "yarn@4.10.3",
+  "packageManager": "yarn@4.11.0",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
@@ -12,7 +12,13 @@
     "test:coverage": "jest --coverage",
     "check": "biome check --write --unsafe ."
   },
-  "keywords": ["diary", "api", "mvc", "typescript", "mongodb"],
+  "keywords": [
+    "diary",
+    "api",
+    "mvc",
+    "typescript",
+    "mongodb"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
