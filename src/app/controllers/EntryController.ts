@@ -24,7 +24,7 @@ export class EntryController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { title, cipherText } = this.ctx.req.body;
+      const { title, cipherText } = this.ctx.request.body as any;
 
       if (!title || typeof title !== 'string') {
         const response = this.error('Title is required and must be a string', 400);
@@ -59,7 +59,7 @@ export class EntryController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { id } = this.ctx.req.params;
+      const { id } = this.ctx.params as any;
 
       if (!UuidUtils.isValid(id)) {
         const response = this.error('Invalid entry ID', 400);
@@ -87,8 +87,8 @@ export class EntryController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { id } = this.ctx.req.params;
-      const { title, cipherText } = this.ctx.req.body;
+      const { id } = this.ctx.params as any;
+      const { title, cipherText } = this.ctx.request.body as any;
 
       if (!UuidUtils.isValid(id)) {
         const response = this.error('Invalid entry ID', 400);
@@ -128,7 +128,7 @@ export class EntryController extends BaseController {
     try {
       if (!this.ctx) throw new Error('Context not set');
 
-      const { id } = this.ctx.req.params;
+      const { id } = this.ctx.params as any;
 
       if (!UuidUtils.isValid(id)) {
         const response = this.error('Invalid entry ID', 400);

@@ -1,8 +1,10 @@
-import express from 'express';
+import cors from '@koa/cors';
+import Router from '@koa/router';
+import Koa from 'koa';
 import config from './app/config';
 import { registerRoutes } from './app/routes';
 import { Database } from './core/Database';
-import { corsMiddleware, errorHandler, loggerMiddleware } from './core/Middleware';
+import { errorHandler, loggerMiddleware } from './core/Middleware';
 
 async function bootstrap() {
   try {
@@ -11,20 +13,23 @@ async function bootstrap() {
     // Initialize database connection
     await Database.connect(config.mongodb);
 
-    // Create Express app
-    const app = express();
+    // Create Koa app
+    const app = new Koa();
 
     // Register global middleware
-    app.use(corsMiddleware());
+    app.use(errorHandler());
+    app.use(cors());
     app.use(loggerMiddleware());
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+
+    // Create router
+    const router = new Router();
 
     // Register routes
-    registerRoutes(app, config);
+    registerRoutes(router, config);
 
-    // Error handling middleware (must be last)
-    app.use(errorHandler());
+    // Use router
+    app.use(router.routes());
+    app.use(router.allowedMethods());
 
     // Start server
     const server = app.listen(config.port, () => {

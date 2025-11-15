@@ -20,7 +20,8 @@ A secure diary API system with custom MVC framework implementation and MongoDB i
 - **Runtime**: Node.js 18+
 - **Language**: TypeScript 5.x
 - **Database**: MongoDB 6.0+ with Mongoose
-- **HTTP Framework**: Express.js
+- **HTTP Framework**: Koa.js 2.x
+- **Router**: @koa/router
 - **Authentication**: JWT (jsonwebtoken)
 - **Password Hashing**: Argon2id
 - **Dev Server**: tsx with hot reload

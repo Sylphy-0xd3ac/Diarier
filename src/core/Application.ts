@@ -1,33 +1,33 @@
-import http from 'node:http';
-import express, { type Express, type Request, type Response, type NextFunction } from 'express';
+import type Koa from 'koa';
+import koaBody from 'koa-body';
+import type { Middleware } from 'koa';
 import type { AppConfig } from '../types';
 import type { BaseController } from './Controller/BaseController';
 import { Database } from './Database';
 import { Router } from './Router/Router';
 
 export class Application {
-  private express: Express;
-  private server: http.Server | null = null;
+  private koa: Koa;
+  private server: any = null;
   private router: Router;
   private config: AppConfig;
-  private middlewares: Array<(req: Request, res: Response, next: NextFunction) => void> = [];
+  private middlewares: Middleware[] = [];
 
   constructor(config: AppConfig) {
     this.config = config;
-    this.express = express();
+    this.koa = new (require('koa'))();
     this.router = new Router();
 
     this.setupDefaultMiddleware();
   }
 
   private setupDefaultMiddleware(): void {
-    this.express.use(express.json());
-    this.express.use(express.urlencoded({ extended: true }));
+    this.koa.use(koaBody());
   }
 
-  use(middleware: (req: Request, res: Response, next: NextFunction) => void): void {
+  use(middleware: Middleware): void {
     this.middlewares.push(middleware);
-    this.express.use(middleware);
+    this.koa.use(middleware);
   }
 
   registerControllers(controllers: BaseController[]): void {
@@ -45,15 +45,11 @@ export class Application {
     try {
       await Database.connect(this.config.mongodb);
 
-      this.express.use(this.router.getExpressRouter());
+      this.koa.use(this.router.getKoaRouter().routes());
+      this.koa.use(this.router.getKoaRouter().allowedMethods());
 
-      this.server = http.createServer(this.express);
-
-      await new Promise<void>((resolve) => {
-        this.server?.listen(port, () => {
-          console.log(`✓ Server running at http://localhost:${port}`);
-          resolve();
-        });
+      this.server = this.koa.listen(port, () => {
+        console.log(`✓ Server running at http://localhost:${port}`);
       });
     } catch (error) {
       console.error('Failed to start server:', error);
@@ -64,7 +60,7 @@ export class Application {
   async stop(): Promise<void> {
     if (this.server) {
       await new Promise<void>((resolve) => {
-        this.server?.close(() => {
+        this.server.close(() => {
           console.log('✓ Server stopped');
           resolve();
         });
@@ -74,7 +70,7 @@ export class Application {
     await Database.disconnect();
   }
 
-  getExpress(): Express {
-    return this.express;
+  getKoa(): Koa {
+    return this.koa;
   }
 }

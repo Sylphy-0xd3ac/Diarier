@@ -1,9 +1,6 @@
-import type { NextFunction, Request, Response } from 'express';
+import type Koa from 'koa';
 
-export interface Context {
-  req: Request;
-  res: Response;
-  next: NextFunction;
+export interface Context extends Koa.Context {
   user?: any;
 }
 

@@ -26,6 +26,7 @@ export abstract class BaseController {
   protected send<T = any>(response: ApiResponse<T>): void {
     if (!this.ctx) throw new Error('Context not set');
     const statusCode = response.code || (response.status === 'success' ? 200 : 400);
-    this.ctx.res.status(statusCode).json(response);
+    this.ctx.status = statusCode;
+    this.ctx.body = response;
   }
 }

@@ -1,35 +1,27 @@
-import { Router as ExpressRouter, type NextFunction, type Request, type Response } from 'express';
-import type { Context, RouteHandler } from '../../types';
+import type KoaRouter from '@koa/router';
+import type { RouteHandler } from '../../types';
 
 export class Router {
-  private router: ExpressRouter;
+  private router: KoaRouter;
   private routes: Map<string, RouteHandler[]> = new Map();
 
   constructor() {
-    this.router = ExpressRouter();
+    const KoaRouterClass = require('@koa/router');
+    this.router = new KoaRouterClass();
   }
 
   register(
     method: 'get' | 'post' | 'put' | 'delete' | 'patch',
     path: string,
-    handlers: any[],
+    handler: any,
   ): void {
     const key = `${method}:${path}`;
-    this.routes.set(key, handlers);
+    this.routes.set(key, [handler]);
 
-    (this.router as any)[method](path, ...handlers);
+    (this.router as any)[method](path, handler);
   }
 
-  getExpressRouter(): ExpressRouter {
+  getKoaRouter(): KoaRouter {
     return this.router;
-  }
-
-  createContext(req: Request, res: Response, next: NextFunction): Context {
-    return {
-      req,
-      res,
-      next,
-      user: (req as any).user,
-    };
   }
 }
