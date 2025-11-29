@@ -1,2 +1,0 @@
-# Diarier
-Diarier.
