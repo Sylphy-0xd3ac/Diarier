@@ -1,81 +1,137 @@
 import { Diary, ServiceResponse } from '../types';
 
-const DELAY_MS = 300;
-const STORAGE_KEY_PIN = 'molo_pin';
-const STORAGE_KEY_DIARIES = 'molo_diaries';
-const STORAGE_KEY_INIT = 'molo_initialized';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// Get token from localStorage
+function getToken(): string | null {
+  return localStorage.getItem('molo_token');
+}
+
+// Save token to localStorage
+function saveToken(token: string): void {
+  localStorage.setItem('molo_token', token);
+}
+
+// Clear token from localStorage
+function clearToken(): void {
+  localStorage.removeItem('molo_token');
+}
 
 class MoloService {
   
   async checkInitStatus(): Promise<ServiceResponse<{ initialized: boolean }>> {
-    await wait(DELAY_MS);
-    const isInit = localStorage.getItem(STORAGE_KEY_INIT) === 'true';
-    return { success: true, data: { initialized: isInit } };
+    try {
+      const response = await fetch(`${API_URL}/check-init-status`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to check init status:', error);
+      return { success: false, error: 'Network error' };
+    }
   }
 
   async initialize(pin: string): Promise<ServiceResponse<null>> {
-    await wait(DELAY_MS);
-    localStorage.setItem(STORAGE_KEY_PIN, pin);
-    localStorage.setItem(STORAGE_KEY_INIT, 'true');
-    localStorage.setItem(STORAGE_KEY_DIARIES, JSON.stringify([]));
-    return { success: true };
+    try {
+      const response = await fetch(`${API_URL}/initialize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to initialize:', error);
+      return { success: false, error: 'Network error' };
+    }
   }
 
   async login(pin: string): Promise<ServiceResponse<{ token: string }>> {
-    await wait(DELAY_MS);
-    const storedPin = localStorage.getItem(STORAGE_KEY_PIN);
-    if (storedPin === pin) {
-      // Mock JWT
-      const token = `jwt_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-      return { success: true, data: { token } };
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin }),
+      });
+      const data = await response.json();
+      if (data.success && data.data?.token) {
+        saveToken(data.data.token);
+      }
+      return data;
+    } catch (error) {
+      console.error('Failed to login:', error);
+      return { success: false, error: 'Network error' };
     }
-    return { success: false, error: 'Invalid PIN' };
   }
 
   async getDiaries(): Promise<ServiceResponse<Diary[]>> {
-    await wait(DELAY_MS);
-    const data = localStorage.getItem(STORAGE_KEY_DIARIES);
-    const diaries: Diary[] = data ? JSON.parse(data) : [];
-    // Sort by date desc
-    diaries.sort((a, b) => b.updatedAt - a.updatedAt);
-    return { success: true, data: diaries };
+    try {
+      const token = getToken();
+      if (!token) {
+        return { success: false, error: 'No token available' };
+      }
+
+      const response = await fetch(`${API_URL}/diaries`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch diaries:', error);
+      return { success: false, error: 'Network error' };
+    }
   }
 
   async saveDiary(diary: Diary): Promise<ServiceResponse<Diary>> {
-    await wait(DELAY_MS);
-    const data = localStorage.getItem(STORAGE_KEY_DIARIES);
-    let diaries: Diary[] = data ? JSON.parse(data) : [];
-    
-    const existingIndex = diaries.findIndex(d => d.id === diary.id);
-    if (existingIndex >= 0) {
-      diaries[existingIndex] = { ...diary, updatedAt: Date.now() };
-    } else {
-      diaries.push({ ...diary, createdAt: Date.now(), updatedAt: Date.now() });
+    try {
+      const token = getToken();
+      if (!token) {
+        return { success: false, error: 'No token available' };
+      }
+
+      const response = await fetch(`${API_URL}/diaries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(diary),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to save diary:', error);
+      return { success: false, error: 'Network error' };
     }
-    
-    localStorage.setItem(STORAGE_KEY_DIARIES, JSON.stringify(diaries));
-    return { success: true, data: diary };
   }
 
   async deleteDiary(id: string): Promise<ServiceResponse<null>> {
     console.log(`[MoloService] Processing delete for diary: ${id}`);
-    await wait(DELAY_MS);
-    const data = localStorage.getItem(STORAGE_KEY_DIARIES);
-    let diaries: Diary[] = data ? JSON.parse(data) : [];
-    
-    const initialLength = diaries.length;
-    diaries = diaries.filter(d => d.id !== id);
-    
-    if (diaries.length !== initialLength) {
-        console.log(`[MoloService] Deleted diary ${id}, new count: ${diaries.length}`);
-    } else {
-        console.warn(`[MoloService] Diary ${id} not found to delete`);
-    }
+    try {
+      const token = getToken();
+      if (!token) {
+        return { success: false, error: 'No token available' };
+      }
 
-    localStorage.setItem(STORAGE_KEY_DIARIES, JSON.stringify(diaries));
-    return { success: true };
+      const response = await fetch(`${API_URL}/diaries/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(`[MoloService] Deleted diary ${id}`);
+      return data;
+    } catch (error) {
+      console.error('Failed to delete diary:', error);
+      console.warn(`[MoloService] Diary ${id} not found to delete`);
+      return { success: false, error: 'Network error' };
+    }
   }
 }
 
