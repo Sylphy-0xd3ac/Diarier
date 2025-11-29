@@ -1,0 +1,5 @@
+{
+  "name": "Molo Diary",
+  "description": "A minimalist, black-and-white diary application with secure local PIN protection and smart editing features.",
+  "requestFramePermissions": []
+}
