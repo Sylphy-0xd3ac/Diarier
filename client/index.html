@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Molo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              gray: {
+                850: '#1f2937',
+                900: '#111827',
+                950: '#030712',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        /* background-color handled by App component classes for dark mode */
+      }
+      /* Custom animations to match component classNames */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      .animate-in.fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      .animate-in.zoom-in-95 { animation: zoomIn 0.3s ease-out forwards; }
+      
+      /* Customize Ant Design Password Input Icon */
+      .custom-pin-input .ant-input-password-icon {
+        font-size: 12px !important;
+        color: #999 !important;
+      }
+      
+      /* Dark mode scrollbar */
+      .dark ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #111827; 
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #374151; 
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #4b5563; 
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "antd": "https://esm.sh/antd@5.14.0?bundle&deps=react@18.2.0,react-dom@18.2.0,dayjs@1.11.10",
+    "dayjs": "https://esm.sh/dayjs@1.11.10",
+    "dayjs/plugin/weekday": "https://esm.sh/dayjs@1.11.10/plugin/weekday",
+    "dayjs/plugin/localeData": "https://esm.sh/dayjs@1.11.10/plugin/localeData",
+    "dayjs/plugin/weekOfYear": "https://esm.sh/dayjs@1.11.10/plugin/weekOfYear",
+    "dayjs/plugin/customParseFormat": "https://esm.sh/dayjs@1.11.10/plugin/customParseFormat",
+    "dayjs/plugin/advancedFormat": "https://esm.sh/dayjs@1.11.10/plugin/advancedFormat",
+    "dayjs/plugin/weekYear": "https://esm.sh/dayjs@1.11.10/plugin/weekYear",
+    "uuid": "https://esm.sh/uuid@9.0.1",
+    "react-markdown": "https://esm.sh/react-markdown@9.0.1?deps=react@18.2.0,react-dom@18.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "dayjs/": "https://aistudiocdn.com/dayjs@^1.11.19/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
