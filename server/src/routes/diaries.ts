@@ -1,7 +1,7 @@
 import Router from '@koa/router';
 import type { Context } from 'koa';
-import { Diary } from '../models/Diary.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { Diary } from '../models/Diary.ts';
+import { authMiddleware } from '../middleware/auth.ts';
 
 const router = new Router({ prefix: '/api/diaries' });
 

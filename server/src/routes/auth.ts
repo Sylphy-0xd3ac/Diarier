@@ -1,9 +1,8 @@
 import Router from '@koa/router';
 import type { Context } from 'koa';
-import { User } from '../models/User.js';
-import { hashPin, verifyPin } from '../utils/crypto.js';
-import { generateToken } from '../utils/jwt.js';
-import { Diary } from '../models/Diary.js';
+import { User } from '../models/User.ts';
+import { hashPin, verifyPin } from '../utils/crypto.ts';
+import { generateToken } from '../utils/jwt.ts';
 
 const router = new Router({ prefix: '/api' });
 

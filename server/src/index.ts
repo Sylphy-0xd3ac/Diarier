@@ -1,10 +1,9 @@
 import Koa from 'koa';
-import type { Context, Next } from 'koa';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
-import authRoutes from './routes/auth.js';
-import diariesRoutes from './routes/diaries.js';
+import authRoutes from './routes/auth.ts';
+import diariesRoutes from './routes/diaries.ts';
 
 const app = new Koa();
 const PORT = process.env.PORT || 3000;

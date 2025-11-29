@@ -1,5 +1,5 @@
 import type { Context, Next } from 'koa';
-import { verifyToken } from '../utils/jwt.js';
+import { verifyToken } from '../utils/jwt.ts';
 
 export async function authMiddleware(ctx: Context, next: Next): Promise<void> {
   const token = ctx.headers.authorization?.split(' ')[1];
