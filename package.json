@@ -1,0 +1,17 @@
+{
+  "name": "molo-diary-monorepo",
+  "version": "1.0.0",
+  "description": "Molo Diary - A full-stack diary application",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "start:server": "npm run start -w server",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}

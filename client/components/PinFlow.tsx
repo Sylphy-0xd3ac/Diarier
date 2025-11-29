@@ -58,7 +58,6 @@ export const PinFlow: React.FC<PinFlowProps> = ({ status, setStatus, onLoginSucc
     const res = await moloService.login(pin);
     if (res.success && res.data) {
       onLoginSuccess(res.data.token);
-      setStatus(AppStatus.DASHBOARD);
     } else {
       message.error('Login failed.');
       setPin(''); // Clear on fail

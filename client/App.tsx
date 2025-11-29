@@ -45,6 +45,7 @@ function App() {
 
   const handleLoginSuccess = (newToken: string) => {
     setToken(newToken);
+    setStatus(AppStatus.DASHBOARD);
   };
 
   const toggleTheme = () => setDarkMode(!darkMode);
